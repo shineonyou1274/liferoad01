@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 나의 100세 인생 로드맵 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #FFF7F9; /* Very light pink background */
+        }
+        .font-gaegu {
+            font-family: 'Gaegu', cursive;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left-width: 6px;
+            transition: transform 0.2s;
+            overflow: hidden; /* For image corners */
+        }
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        /* Category Colors */
+        .cat-study { border-color: #FFADAD; } /* Pastel Red */
+        .cat-work { border-color: #FFD6A5; } /* Pastel Orange */
+        .cat-family { border-color: #FDFFB6; } /* Pastel Yellow */
+        .cat-hobby { border-color: #CAFFBF; } /* Pastel Green */
+        .cat-growth { border-color: #9BF6FF; } /* Pastel Blue */
+        .cat-etc { border-color: #A0C4FF; } /* Pastel Indigo */
+
+        .modal-bg {
+            background-color: rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #FF8FAB; /* Cute Pink */
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #FF6F91;
+        }
+        .btn-secondary {
+             background-color: #F3F4F6;
+             color: #4B5563;
+        }
+        .btn-secondary:hover {
+            background-color: #E5E7EB;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            background-color: #FFC2D1; /* Lighter pink for timeline */
+            height: 100%;
+            z-index: -1;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #FF8FAB;
+            border: 4px solid #FFF7F9;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF0F3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFC2D1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF8FAB;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container mx-auto p-4 md:p-8 relative">
+        
+        <!-- Name Input -->
+        <div class="absolute top-4 right-4 md:top-8 md:right-8">
+            <input type="text" id="user-name" placeholder="이름을 입력하세요" class="text-right bg-transparent font-gaegu text-xl text-gray-600 border-b-2 border-pink-200 focus:outline-none focus:border-pink-400 w-40 transition">
+            <span id="user-name-display" class="hidden text-right bg-transparent font-gaegu text-xl text-gray-600 w-40 pr-[2px] pb-[2px]"></span>
+        </div>
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold font-gaegu text-[#E15A82]">💖 나의 100세 인생 로드맵 💖</h1>
+            <p class="text-gray-500 mt-2">당신의 멋진 인생 계획을 세워보세요!</p>
+        </header>
+
+        <!-- Download Buttons -->
+        <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
+            <button id="download-image-btn" class="btn-primary font-bold py-3 px-5 rounded-full shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>이미지로 저장</span>
+            </button>
+             <button id="download-data-btn" class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-3 px-5 rounded-full shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span>파일로 저장</span>
+            </button>
+        </div>
+        
+        <!-- Timeline Container -->
+        <div id="timeline-container" class="relative">
+            <div class="timeline-line hidden md:block"></div>
+            <!-- Decades will be injected here by JavaScript -->
+        </div>
+
+        <!-- Add/Edit Modal -->
+        <div id="modal" class="fixed inset-0 modal-bg items-center justify-center z-50 hidden">
+            <div class="modal-content bg-white w-11/12 md:max-w-md mx-auto rounded-xl shadow-lg z-50 p-6 transform scale-95">
+                <h2 id="modal-title" class="text-2xl font-bold font-gaegu text-center mb-4">새로운 계획 추가하기</h2>
+                <form id="modal-form">
+                    <input type="hidden" id="event-id">
+                    <input type="hidden" id="event-decade">
+                    
+                    <div class="mb-4">
+                        <label for="event-title" class="block text-gray-700 text-sm font-bold mb-2">계획 이름:</label>
+                        <input type="text" id="event-title" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-pink-400" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="event-category" class="block text-gray-700 text-sm font-bold mb-2">카테고리:</label>
+                        <select id="event-category" class="shadow border rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                            <option value="study">🎓 학업/진로</option>
+                            <option value="work">💼 직업</option>
+                            <option value="family">👨‍👩‍👧‍👦 결혼/가족</option>
+                            <option value="hobby">🎨 취미/여행</option>
+                            <option value="growth">🌱 개인 성장</option>
+                            <option value="etc">⭐ 기타</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="event-description" class="block text-gray-700 text-sm font-bold mb-2">상세 내용:</label>
+                        <textarea id="event-description" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-pink-400" rows="3"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-4">
+                        <button type="submit" class="btn-primary font-bold py-2 px-6 rounded-full">저장</button>
+                        <button type="button" id="modal-cancel-btn" class="btn-secondary font-bold py-2 px-6 rounded-full">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineContainer = document.getElementById('timeline-container');
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalForm = document.getElementById('modal-form');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+            
+            const eventIdInput = document.getElementById('event-id');
+            const eventDecadeInput = document.getElementById('event-decade');
+            const eventTitleInput = document.getElementById('event-title');
+            const eventCategoryInput = document.getElementById('event-category');
+            const eventDescriptionInput = document.getElementById('event-description');
+            const userNameInput = document.getElementById('user-name');
+
+            const downloadImageBtn = document.getElementById('download-image-btn');
+            const downloadDataBtn = document.getElementById('download-data-btn');
+
+            let roadmapData = {};
+
+            const decades = [
+                { id: 'past', title: '~10대 (과거)', subtitle: '나는 이런 경험을 했어요', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/1.png' },
+                { id: 'present', title: '현재 (고등학생)', subtitle: '지금 나는 무엇을 하고 있을까?', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/1.png' },
+                { id: 'd20s', title: '20대', subtitle: '반짝반짝 빛날 나의 20대', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/2.png' },
+                { id: 'd30s', title: '30대', subtitle: '전문가로 성장하는 30대', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/3.png' },
+                { id: 'd40s', title: '40대', subtitle: '인생의 새로운 장을 여는 40대', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/4.png' },
+                { id: 'd50s', title: '50대', subtitle: '지혜와 경험이 무르익는 50대', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/5.png' },
+                { id: 'd60s', title: '60대', subtitle: '제2의 인생을 시작하는 60대', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/6.png' },
+                { id: 'd70plus', title: '70대 이후', subtitle: '아름다운 황혼의 삶', image: 'https://raw.githubusercontent.com/shineonyou1274/careerimage/43bb6758dc1e3bcb8f6b9fd9ca7fa267433158a6/7.png' }
+            ];
+
+            const categoryMap = {
+                'study': { name: '🎓 학업/진로', class: 'cat-study' },
+                'work': { name: '💼 직업', class: 'cat-work' },
+                'family': { name: '👨‍👩‍👧‍👦 결혼/가족', class: 'cat-family' },
+                'hobby': { name: '🎨 취미/여행', class: 'cat-hobby' },
+                'growth': { name: '🌱 개인 성장', class: 'cat-growth' },
+                'etc': { name: '⭐ 기타', class: 'cat-etc' }
+            };
+
+            // --- Data Management ---
+            function loadData() {
+                const savedData = localStorage.getItem('myRoadmap');
+                if (savedData) {
+                    roadmapData = JSON.parse(savedData);
+                } else {
+                    decades.forEach(d => { roadmapData[d.id] = []; });
+                }
+
+                const savedName = localStorage.getItem('userName');
+                if (savedName) {
+                    userNameInput.value = savedName;
+                }
+            }
+
+            function saveData() {
+                localStorage.setItem('myRoadmap', JSON.stringify(roadmapData));
+            }
+            
+            userNameInput.addEventListener('input', () => {
+                localStorage.setItem('userName', userNameInput.value);
+            });
+
+
+            // --- Modal ---
+            function openModal(decade, event = null) {
+                modalForm.reset();
+                if (event) { // Editing
+                    modalTitle.textContent = '계획 수정하기';
+                    eventIdInput.value = event.id;
+                    eventDecadeInput.value = decade;
+                    eventTitleInput.value = event.title;
+                    eventCategoryInput.value = event.category;
+                    eventDescriptionInput.value = event.description;
+                } else { // Adding
+                    modalTitle.textContent = '새로운 계획 추가하기';
+                    eventIdInput.value = '';
+                    eventDecadeInput.value = decade;
+                }
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.firstElementChild.classList.remove('scale-95');
+                    modal.firstElementChild.classList.add('scale-100');
+                }, 10);
+            }
+
+            function closeModal() {
+                 modal.firstElementChild.classList.remove('scale-100');
+                 modal.firstElementChild.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 200);
+            }
+
+            // --- Rendering ---
+            function renderTimeline() {
+                timelineContainer.innerHTML = '';
+                decades.forEach((decade, index) => {
+                    const isEven = index % 2 === 0;
+                    const alignmentClass = isEven ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8';
+                    const crossAlignClass = isEven ? 'md:items-end' : 'md:items-start';
+
+                    const decadeEl = document.createElement('div');
+                    decadeEl.className = 'mb-8 flex flex-col items-center md:items-stretch';
+                    decadeEl.innerHTML = `
+                        <div class="relative w-full md:w-1/2 ${alignmentClass}">
+                            <div class="timeline-dot hidden md:block" style="top: 15px;"></div>
+                            <div class="flex flex-col ${crossAlignClass} text-center">
+                                <h2 class="text-3xl font-gaegu font-bold text-[#E15A82]">${decade.title}</h2>
+                                <p class="text-gray-500 mb-4">${decade.subtitle}</p>
+                                <img src="${decade.image}" alt="${decade.title}" class="rounded-lg shadow-md mb-4 object-cover w-36 h-36 mx-auto">
+                            </div>
+                            <div id="cards-${decade.id}">
+                                <!-- Event cards go here -->
+                            </div>
+                            <button data-decade="${decade.id}" class="add-event-btn mt-2 bg-white hover:bg-pink-100 text-pink-400 font-bold py-2 px-4 rounded-full border-2 border-dashed border-pink-300 w-full transition">
+                                + 추가하기
+                            </button>
+                        </div>
+                    `;
+                    timelineContainer.appendChild(decadeEl);
+
+                    const cardsContainer = document.getElementById(`cards-${decade.id}`);
+                    renderCards(decade.id, cardsContainer);
+                });
+            }
+
+            function renderCards(decadeId, container) {
+                container.innerHTML = '';
+                const events = roadmapData[decadeId] || [];
+                if (events.length === 0) {
+                     container.innerHTML = `<div class="text-center text-gray-400 p-4">아직 계획이 없어요.</div>`;
+                } else {
+                    events.forEach(event => {
+                        const card = document.createElement('div');
+                        card.className = `card cat-${event.category} cursor-pointer`;
+                        card.dataset.id = event.id;
+                        card.dataset.decade = decadeId;
+
+                        card.innerHTML = `
+                            
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-bold text-lg">${event.title}</p>
+                                    <p class="text-sm text-gray-500">${categoryMap[event.category].name}</p>
+                                </div>
+                                <button data-id="${event.id}" data-decade="${decadeId}" class="delete-event-btn text-gray-400 hover:text-red-500 text-xl flex-shrink-0 ml-2">&times;</button>
+                            </div>
+                            ${event.description ? `<p class="mt-2 text-gray-700 whitespace-pre-wrap">${event.description}</p>` : ''}
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+            }
+            
+            // --- Event Handlers ---
+            modalForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = eventIdInput.value;
+                const decade = eventDecadeInput.value;
+                const newEvent = {
+                    id: id ? id : Date.now().toString(),
+                    title: eventTitleInput.value,
+                    category: eventCategoryInput.value,
+                    description: eventDescriptionInput.value,
+                };
+
+                if (id) { // Editing
+                    const index = roadmapData[decade].findIndex(event => event.id === id);
+                    if (index !== -1) {
+                        roadmapData[decade][index] = newEvent;
+                    }
+                } else { // Adding
+                    roadmapData[decade].push(newEvent);
+                }
+                
+                saveData();
+                renderTimeline();
+                closeModal();
+            });
+
+            timelineContainer.addEventListener('click', (e) => {
+                const target = e.target;
+                if (target.classList.contains('add-event-btn')) {
+                    openModal(target.dataset.decade);
+                }
+                if (target.classList.contains('delete-event-btn')) {
+                    e.stopPropagation();
+                    const decade = target.dataset.decade;
+                    const id = target.dataset.id;
+                    if (confirm('정말로 이 계획을 삭제하시겠어요?')) {
+                        roadmapData[decade] = roadmapData[decade].filter(event => event.id !== id);
+                        saveData();
+                        renderTimeline();
+                    }
+                }
+                if (target.closest('.card')) {
+                    const card = target.closest('.card');
+                    const decade = card.dataset.decade;
+                    const id = card.dataset.id;
+                    const event = roadmapData[decade].find(e => e.id === id);
+                    if(event) {
+                       openModal(decade, event);
+                    }
+                }
+            });
+
+            modalCancelBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // --- Download Functionality ---
+            downloadImageBtn.addEventListener('click', () => {
+                const buttons = document.querySelectorAll('button');
+                const userNameDisplay = document.getElementById('user-name-display');
+                
+                // --- Prepare for capture ---
+                buttons.forEach(btn => btn.style.visibility = 'hidden');
+
+                // Sync span with input and switch visibility
+                const nameValue = userNameInput.value;
+                if (nameValue) {
+                    userNameDisplay.textContent = nameValue;
+                    userNameDisplay.style.color = '#4B5563'; // Same as input text color
+                } else {
+                    userNameDisplay.textContent = userNameInput.placeholder;
+                    userNameDisplay.style.color = '#9CA3AF'; // A placeholder-like gray color
+                }
+                userNameInput.style.display = 'none';
+                userNameDisplay.style.display = 'inline-block';
+
+                const container = document.querySelector('.container');
+                container.style.maxWidth = 'none';
+
+                html2canvas(document.getElementById('app'), { 
+                    backgroundColor: '#FFF7F9',
+                    scale: 1.5,
+                    windowWidth: document.documentElement.offsetWidth,
+                    windowHeight: document.documentElement.scrollHeight,
+                    useCORS: true // for external images
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `${userNameInput.value || '나'}_인생_로드맵.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).catch(err => {
+                    console.error('oops, something went wrong!', err);
+                }).finally(() => {
+                    // --- Cleanup after capture ---
+                    buttons.forEach(btn => btn.style.visibility = 'visible');
+                    userNameInput.style.display = ''; // Show input again
+                    userNameDisplay.style.display = 'none'; // Hide span
+                    container.style.maxWidth = '';
+                });
+            });
+
+            downloadDataBtn.addEventListener('click', () => {
+                const dataStr = JSON.stringify({name: userNameInput.value, roadmap: roadmapData}, null, 2);
+                const dataBlob = new Blob([dataStr], {type: "application/json"});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.download = 'roadmap_data.json';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            });
+
+            // --- Initial Load ---
+            loadData();
+            renderTimeline();
+        });
+    </script>
+</body>
+</html>
+
